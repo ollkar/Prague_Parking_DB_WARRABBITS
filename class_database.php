@@ -5,7 +5,7 @@ class Database
     const SERVERNAME = "localhost";
     const USERNAME = "root";
     const PASSWORD = "";
-    const DBNAME = "";
+    const DBNAME = "prague_parking2";
 
     public static function open() // Open connection to DB-server.
     {
