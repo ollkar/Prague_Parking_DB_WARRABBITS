@@ -45,7 +45,7 @@ class Database
     }
     
     //insert into Vehicle - Olle
-    public static function InsertVehicle($vehicletypeid, $regnr)
+    public static function Insert_Vehicle($vehicletypeid, $regnr)
     {
         $conn = self::open();
 
@@ -87,7 +87,7 @@ class Database
     }
     
     
-      public static function InsertLog($parkingmomentid, $cost, $timeexit)
+      public static function Insert_Log($parkingmomentid, $cost, $timeexit)
       {
           $conn = self::open();
   
