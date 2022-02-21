@@ -18,6 +18,31 @@ class Database
         return $connection;
     }
 
+    // INSERT ParkingSpot  - Eric
+    public static function Insert_ParkingSpots($size)
+    {
+        $conn = self::open();
+
+        for ($i=1; $i <= 20; $i++) 
+        { 
+            $stmt = $conn->prepare("INSERT INTO `parkingspot` (parkingspotid, spotsize) VALUES (?,?);");
+            $stmt->bind_param("ii", $i, $size);
+
+            if($stmt->execute())
+            {
+                $stmt->close();
+            }
+            else
+            {
+                $stmt->close();
+                $conn->close();
+                throw new mysqli_sql_exception("ERROR Could not INSERT");
+            }
+        }
+
+        $conn->close();
+        return "Inserted successfully";  // return $_SESSION['message'] ? to display message freely
+    }
     
 }
 ?>
