@@ -50,7 +50,7 @@ class Database
         $conn = self::open();
 
         $stmt = $conn->prepare("INSERT INTO `Vehicle`(VehicleTypeID, RegNr) VALUES(?,?);");
-        $stmt->bind_param("ii", $vehicletypeid, $regnr);
+        $stmt->bind_param("is", $vehicletypeid, $regnr);
 
         if ($stmt->execute()) {
           echo "Insert was successfull!";
@@ -92,7 +92,7 @@ class Database
           $conn = self::open();
   
           $stmt = $conn->prepare("INSERT INTO `Log`(ParkingmomentID, Cost, TimeExit) VALUES(?,?,?);");
-          $stmt->bind_param("iii", $parkingmomentid, $cost, $timeexit);
+          $stmt->bind_param("iis", $parkingmomentid, $cost, $timeexit);
   
           if ($stmt->execute()) {
             echo "Insert was successfull!";
