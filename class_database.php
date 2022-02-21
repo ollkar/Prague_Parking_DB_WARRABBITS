@@ -86,5 +86,23 @@ class Database
 
     }
     
+    
+      public static function InsertLog($parkingmomentid, $cost, $timeexit)
+      {
+          $conn = self::open();
+  
+          $stmt = $conn->prepare("INSERT INTO `Log`(ParkingmomentID, Cost, TimeExit) VALUES(?,?,?);");
+          $stmt->bind_param("iii", $parkingmomentid, $cost, $timeexit);
+  
+          if ($stmt->execute()) {
+            echo "Insert was successfull!";
+          } 
+          else {
+            echo "Error: " . $stmt . "<br>" . $conn->error;
+          }
+  
+          $conn->close();
+      } 
+    
 }
 ?>
