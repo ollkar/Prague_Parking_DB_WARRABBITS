@@ -2,10 +2,10 @@
 
 class Database
 {
-    const SERVERNAME = "localhost:3316";
+    const SERVERNAME = "localhost";
     const USERNAME = "root";
     const PASSWORD = "";
-    const DBNAME = "pragueparkingdb";
+    const DBNAME = "";
 
     public static function open() // Open connection to DB-server.
     {
