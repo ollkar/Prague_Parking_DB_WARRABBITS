@@ -44,5 +44,23 @@ class Database
         return "Inserted successfully";  // return $_SESSION['message'] ? to display message freely
     }
     
+    //insert into Vehicle - Olle
+    public static function InsertVehicle($vehicletypeid, $regnr)
+    {
+        $conn = self::open();
+
+        $stmt = $conn->prepare("INSERT INTO `Vehicle`(VehicleTypeID, RegNr) VALUES(?,?);");
+        $stmt->bind_param("ii", $vehicletypeid, $regnr);
+
+        if ($stmt->execute()) {
+          echo "Insert was successfull!";
+        } 
+        else {
+          echo "Error: " . $stmt . "<br>" . $conn->error;
+        }
+
+        $conn->close();
+    }
+    
 }
 ?>
