@@ -104,5 +104,32 @@ class Database
           $conn->close();
       } 
     
+          //visa parkerade fordon
+          public function ShowParkedVehicles()
+      {
+        $conn = self::open();
+
+        $sql = <<<'SQL'
+        SELECT v.RegNr, vt.Type, pm.TimeArrivle
+        FROM parkingmoments AS pm
+        INNER JOIN vehicle AS v ON pm.VehicleID = v.VehicleID
+        INNER JOIN vehicletype AS vt ON v.VehicleTypeID = vt.VehicleType;
+        SQL;
+
+
+        $result = mysqli_query($conn, $sql);
+
+        if($result->num_rows > 0)
+        {
+            while($row = $result->fetch_assoc()) {
+                echo $row['RegNr'] . " | " . $row['Type'] . " | " . $row['TimeArrivle'];
+              }
+        }
+        else{
+            echo "No parked vehicles found!";
+        }
+        
+      }
+    
 }
 ?>
