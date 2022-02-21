@@ -62,5 +62,29 @@ class Database
         $conn->close();
     }
     
+      public static function insert_vehicleType()
+    {
+        $con = self::open();
+
+        $sql = "INSERT INTO vehicleType (`type`, vehicleSize)
+        VALUES ('car', 20);";
+        $sql .= "INSERT INTO vehicleType (`type`, vehicleSize)
+        VALUES ('mc', 10);";
+        $sql .= "INSERT INTO vehicleType (`type`, vehicleSize)
+        VALUES ('bike', 5);";
+
+        if ($con->multi_query($sql) === TRUE) 
+            {
+            echo "New record created successfully";
+            }
+        else 
+            {
+            echo "Error: " . $sql . "<br>" . $con->error;
+            }
+
+        $con->close();
+
+    }
+    
 }
 ?>
