@@ -131,5 +131,34 @@ class Database
         
       }
     
+    //search for regnr db
+     public function dbSearchRegNr($regnr)
+      {
+          $regnr = strtoupper($regnr);
+          $conn = self::open();
+
+          
+          $sql = <<<'SQL'
+          SELECT v.RegNr, pm.ParkingSpotID
+          FROM parkingmoments AS pm
+          INNER JOIN vehicle AS v ON pm.VehicleID = v.VehicleID;
+          SQL;
+
+          $result = $conn->query($sql);
+
+          if ($result->num_rows > 0) 
+          {
+            while($row = $result->fetch_assoc()) 
+            {
+               if($row["RegNr"] == $regnr)
+               {
+                   return $row["ParkingSpotID"];
+               }
+            }
+          } 
+          $conn->close();
+          return -1;
+      }
+    
 }
 ?>
