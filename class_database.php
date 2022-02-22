@@ -178,5 +178,31 @@ class Database
           return -1;
       }
     
+       //find empty spot
+       public function findemptyspot($vehicle)
+      {
+        $conn = self::open();
+        $sql = <<<'SQL'
+            SELECT ps.ParkingSpotID, ps.SpotSize
+            FROM parkingspot AS ps
+            LEFT JOIN parkingmoments AS pm ON pm.ParkingSpotID = ps.ParkingSpotID
+            LEFT JOIN vehicle AS v On v.VehicleID = pm.VehicleID
+            LEFT JOIN vehicletype AS vt ON vt.VehicleType = v.VehicleTypeID;
+        SQL;
+
+        $result = $conn->query($sql);
+         
+        while($row = $result->fetch_assoc()) 
+        {
+            $space_left = $row["SpotSize"] - $vehicle->get_vehicleSize();
+            if($space_left >= 0)
+              {
+                  return $row["ParkingSpotID"];
+              }
+        }
+        return -1;   
+        $conn->close();
+    }
+    
 }
 ?>
