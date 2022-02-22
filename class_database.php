@@ -104,12 +104,12 @@ class Database
           $conn->close();
       } 
             //insert into vehicle Moments
-    public static function insert_vehicleMoments($parkingSpot, $VehicleID, $TimeArrivle)
+    public static function insert_vehicleMoments($parkingSpot, $VehicleID, $TimeArrival)
     {
         $conn = self::open();
   
-        $stmt = $conn->prepare("INSERT INTO parkingmoments(parkingSpotID, VehicleID, TimeArrivle) VALUES(?,?,?);");
-        $stmt->bind_param("iis", $parkingSpot, $VehicleID, $TimeArrivle);
+        $stmt = $conn->prepare("INSERT INTO parkingmoments(parkingSpotID, VehicleID, TimeArrival) VALUES(?,?,?);");
+        $stmt->bind_param("iis", $parkingSpot, $VehicleID, $TimeArrival);
 
         if ($stmt->execute()) {
           echo "Insert was successfull!";
@@ -128,7 +128,7 @@ class Database
         $conn = self::open();
 
         $sql = <<<'SQL'
-        SELECT v.RegNr, vt.Type, pm.TimeArrivle
+        SELECT v.RegNr, vt.Type, pm.TimeArrival
         FROM parkingmoments AS pm
         INNER JOIN vehicle AS v ON pm.VehicleID = v.VehicleID
         INNER JOIN vehicletype AS vt ON v.VehicleTypeID = vt.VehicleType;
@@ -140,7 +140,7 @@ class Database
         if($result->num_rows > 0)
         {
             while($row = $result->fetch_assoc()) {
-                echo $row['RegNr'] . " | " . $row['Type'] . " | " . $row['TimeArrivle'] . "<br>";
+                echo $row['RegNr'] . " | " . $row['Type'] . " | " . $row['TimeArrival'] . "<br>";
               }
         }
         else{
