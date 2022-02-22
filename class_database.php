@@ -350,18 +350,18 @@ class Database
      
     }
     
-    //move vehicle inte klar!!!!!!!!!!!!!
-    public function moveVehicle($vehicle, $ParkingSpotID)
+    
+    // FUNGERAR NU!
+    public static function moveVehicle($vehicle, $ParkingSpotID)
     {
         $conn = self::open();
         $regnr = $vehicle->get_regnr();
+        $momentID = self::Get_parkingMomentID($regnr);
 
         $sqlfindlastspot =
         "SELECT ParkingSpotID
-        FROM parkingmoments AS pm
-        INNER JOIN vehicle AS v 
-        ON v.VehicleID = pm.VehicleID
-        WHERE v.RegNr = '$regnr';";
+        FROM parkingmoments 
+        WHERE parkingmomentsID = '$momentID';";
 
         $sqlupdate = 
         "UPDATE parkingmoments AS pm
@@ -370,25 +370,34 @@ class Database
         SET pm.ParkingSpotID = $ParkingSpotID
         WHERE v.RegNr = '$regnr';";
 
-        
 
+        
         $spaceleft = self::Get_SpotSize($ParkingSpotID) - $vehicle->get_vehicleSize();
         if($spaceleft >= 0)
         {
-            $lastspot = (int)$conn->query($sqlfindlastspot); //sparar tidigare plats
-            self::Update_SpotSize_Sub($ParkingSpotID, $vehicle); //ändra storlek på ny plats
+            $result = $conn->query($sqlfindlastspot);
+
+            if ($result->num_rows > 0) 
+            {
+                while($row = $result->fetch_assoc()) 
+                {
+                    $lastspot = $row["ParkingSpotID"]; //sparar tidigare plats
+                } 
+            }
+            
             self::Update_SpotSize_Add($lastspot, $vehicle); //uppdatera tidigare plats
+            self::Update_SpotSize_Sub($ParkingSpotID, $vehicle); //ändra storlek på ny plats
+            
             $conn->query($sqlupdate); //flyttar fordon till ny plats
            
-
+            $conn->close();
             return $vehicle->get_regnr() . " moved to parkingspot: " . $ParkingSpotID;
         }
         else 
         {
+        $conn->close();
           return "No space left on parkingspot: " . $ParkingSpotID;
         }
-
-        $conn->close();
         
     }
     
