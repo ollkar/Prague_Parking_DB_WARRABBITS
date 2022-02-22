@@ -146,6 +146,7 @@ class Database
         else{
             echo "No parked vehicles found!";
         }
+              $conn->close();
         
       }
     
