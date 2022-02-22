@@ -103,6 +103,24 @@ class Database
   
           $conn->close();
       } 
+            //insert into vehicle Moments
+    public static function insert_vehicleMoments($parkingSpot, $VehicleID, $TimeArrivle)
+    {
+        $conn = self::open();
+  
+        $stmt = $conn->prepare("INSERT INTO parkingmoments(parkingSpotID, VehicleID, TimeArrivle) VALUES(?,?,?);");
+        $stmt->bind_param("iis", $parkingSpot, $VehicleID, $TimeArrivle);
+
+        if ($stmt->execute()) {
+          echo "Insert was successfull!";
+        } 
+        else {
+          echo "Error: " . $stmt . "<br>" . $conn->error;
+        }
+
+        $conn->close();
+
+    }
     
           //visa parkerade fordon
           public function ShowParkedVehicles()
