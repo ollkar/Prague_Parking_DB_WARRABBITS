@@ -291,7 +291,49 @@ class Database
             throw new mysqli_sql_exception("Error creating table: " . $conn->error);
         }
      
-    } 
+    }
+    
+    //move vehicle inte klar!!!!!!!!!!!!!
+    public function moveVehicle($vehicle, $ParkingSpotID)
+    {
+        $conn = self::open();
+        $regnr = $vehicle->get_regnr();
+
+        $sqlfindlastspot =
+        "SELECT ParkingSpotID
+        FROM parkingmoments AS pm
+        INNER JOIN vehicle AS v 
+        ON v.VehicleID = pm.VehicleID
+        WHERE v.RegNr = '$regnr';";
+
+        $sqlupdate = 
+        "UPDATE parkingmoments AS pm
+        INNER JOIN vehicle AS v 
+        ON v.VehicleID = pm.VehicleID
+        SET pm.ParkingSpotID = $ParkingSpotID
+        WHERE v.RegNr = '$regnr';";
+
+        
+
+        $spaceleft = self::Get_SpotSize($ParkingSpotID) - $vehicle->get_vehicleSize();
+        if($spaceleft >= 0)
+        {
+            $lastspot = (int)$conn->query($sqlfindlastspot); //sparar tidigare plats
+            self::Update_SpotSize_Sub($ParkingSpotID, $vehicle); //ändra storlek på ny plats
+            self::Update_SpotSize_Add($lastspot, $vehicle); //uppdatera tidigare plats
+            $conn->query($sqlupdate); //flyttar fordon till ny plats
+           
+
+            return $vehicle->get_regnr() . " moved to parkingspot: " . $ParkingSpotID;
+        }
+        else 
+        {
+          return "No space left on parkingspot: " . $ParkingSpotID;
+        }
+
+        $conn->close();
+        
+    }
     
 }
 ?>
