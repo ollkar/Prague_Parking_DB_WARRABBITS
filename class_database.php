@@ -150,6 +150,63 @@ class Database
         
       }
     
+    
+    //----------------FEL FEL FEL FEL FEL------------------------------------------DENNA METODEN OCH NÄSTA :(
+    public function Get_parkingMomentID($regNr)
+    {
+      $conn = self::open();
+      $spotID = self::dbSearchRegNr($regNr);
+      if($spotID == -1){
+        $conn->close();
+        throw new mysqli_sql_exception("fordonet har inte parkerats");
+      }
+
+      $sql = <<<'SQL'
+      SELECT pm.parkingmomentsID
+      FROM vehicle AS v
+      INNER JOIN parkingMoments AS pm ON v.VehicleID = pm.VehicleID
+      INNER JOIN ParkingSpot as ps ON pm.ParkingSpotID = ps.ParkingSpotID
+      WHERE  regNr =   
+      SQL;
+
+      $sql.= '"'.$regNr.'"'.";";
+      $result = mysqli_query($conn, $sql);
+
+      if ($result->num_rows > 0) 
+          {
+            while($row = $result->fetch_assoc()) 
+            {
+
+              $momentID = $row["parkingmomentsID"];
+              return $momentID;
+            }
+          } 
+          else
+          {
+            throw new mysqli_sql_exception("0 rows returned");
+          }
+      
+      $conn->close();
+      //"spot" och "vehicle" ska skickas vidare
+    }
+
+
+    public function DeleteParkedVehicle($regNr)
+    {
+      $momentID = self::Get_parkingMomentID($regNr);
+      $conn = self::open();
+
+      $stmt = $conn->prepare("INSERT TO Log WHERE parkingmomentsID = ?");
+      $stmt->bind_param("i", $momentID);
+
+      $stmt2 = $conn->prepare("DELETE FROM ParkingMoments WHERE parkingmomentsID = ?");
+      $stmt2->bind_param("i", $momentID);
+  
+      $conn->close();
+
+    }
+//----------------FEL FEL FEL FEL FEL------------------- DOM TVÅ ÅVANSTÅENDE METODERNA SUUUUUGER
+    
     //search for regnr db
      public function dbSearchRegNr($regnr)
       {
