@@ -200,9 +200,97 @@ class Database
                   return $row["ParkingSpotID"];
               }
         }
+        $conn->close();
         return -1;   
+    }
+    
+     public static function Get_SpotSize($spot)
+    {
+        $conn = self::open();
+
+        $sql = "SELECT spotsize FROM parkingspot WHERE parkingspotID = $spot;";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) 
+        {
+        // output data of each row
+        while($row = $result->fetch_assoc()) 
+        {
+            return $row["spotsize"];
+        }
+        } 
+        else 
+        {
+            echo "0 results";
+        }
         $conn->close();
     }
+
+    public static function Update_SpotSize_Sub($spot, $vehicle)
+    {
+        $conn = self::open();
+
+        $newsize = (self::Get_SpotSize($spot)) - ($vehicle->get_vehicleSize());
+        
+        $sql = "UPDATE parkingspot
+        SET spotsize = $newsize
+        WHERE parkingspotID=$spot;";
+
+        if ($conn->query($sql) === TRUE) 
+        {
+            echo "Updated successfully";
+        }
+        else 
+        {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+
+        $conn->close();
+
+    }
+    
+    public static function Update_SpotSize_Add($spot, $vehicle)
+    {
+        $conn = self::open();
+
+        $newsize = (self::Get_SpotSize($spot)) + ($vehicle->get_vehicleSize());
+        
+        $sql = "UPDATE parkingspot
+        SET spotsize = $newsize
+        WHERE parkingspotID=$spot;";
+
+        if ($conn->query($sql) === TRUE) 
+        {
+            echo "Updated successfully";
+        }
+        else 
+        {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+
+        $conn->close();
+    }
+
+    public static function Reset_Database() // SCRIPT SQLFILE TO DATABASE
+    {
+        // open connection.
+        $conn = self::open(); 
+
+        // Create database with tables.
+        $dbscript = file_get_contents("prague_parking2.sql");
+
+        if ($conn->multi_query($dbscript) === TRUE) 
+        {
+            $conn->close();
+            return "PragueParking was created successfully!"; // return $_SESSION['message'] ? to display message freely
+        } 
+        else 
+        {
+            $conn->close();
+            throw new mysqli_sql_exception("Error creating table: " . $conn->error);
+        }
+     
+    } 
     
 }
 ?>
